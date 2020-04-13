@@ -59,7 +59,7 @@
                 }
                 for (var key in nums_city) {
                     key_arr = key.split(',');
-                    loc = {lat: parseInt(key_arr[0]), lng: parseInt(key_arr[1]), city: parseInt(key_arr[2]) + " - " + nums_city[key] + " cases"};
+                    loc = {lat: parseInt(key_arr[0]), lng: parseInt(key_arr[1]), city: key_arr[2] + " - " + nums_city[key] + " cases"};
                     myFunc(loc, map);
                 }
 

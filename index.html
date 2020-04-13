@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Novel COVID-19 MAP</title>
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+
+      // This example displays a marker at the center of Australia.
+      // When the user clicks the marker, an info window opens.
+
+      function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 4,
+          center: {lat: 43.6474713, lng: -79.7088933}
+        });
+        var columns=['Reporting_PHU_City', 'Reporting_PHU_Latitude', 'Reporting_PHU_Longitude']; 
+        var api_key = '455fd63b-603d-4608-8216-7d8647f43350';
+        var limit = '100000';
+        var url = 'https://data.ontario.ca/api/3/action/datastore_search?' + 
+                  'resource_id=' + api_key + 
+                  '&fields=' + columns.toString() +
+                  '&limit=' + limit;
+
+        $.ajax({
+            url: url,
+            type:"GET",
+            dataType:"json",
+            success:function(data){
+                var records = data['result']['records'];
+                var nums_city = {};
+                for (var i in records) {
+                  var key = String(records[i].Reporting_PHU_Latitude) + ',' + 
+                            String(records[i].Reporting_PHU_Longitude) + ',' +  
+                            String(records[i].Reporting_PHU_City);
+
+                  if (nums_city[key]) {
+                    nums_city[key] += 1;
+                  } else {
+                    nums_city[key] = 1;
+                  }
+                }
+                for (var key in nums_city) {
+                    key_arr = key.split(',');
+                    loc = {lat: parseInt(key_arr[0]), lng: parseInt(key_arr[1]), city: parseInt(key_arr[2]) + " - " + nums_city[key] + " cases"};
+                    myFunc(loc, map);
+                }
+
+            },
+            error:function(msg){
+                console.error(msg);
+            }
+        });
+      }
+
+      function myFunc(item, map) {
+        var uluru = {lat: item["lat"], lng: item["lng"]};
+
+        var contentString = item['city'];
+
+        var infowindow = new google.maps.InfoWindow({
+          content: contentString
+        });
+
+        var marker = new google.maps.Marker({
+          position: uluru,
+          map: map,
+        });
+
+        marker.addListener('click', function() {
+          infowindow.open(map, marker);
+        });
+
+      }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDNAyYYD2RFz9gQ5uQwNKYG7zXYgd2o25Q&callback=initMap">
+    </script>
+  </body>
+</html>

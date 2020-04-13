@@ -59,7 +59,6 @@
                   var key = String(records[i].Reporting_PHU_Latitude) + ',' + 
                             String(records[i].Reporting_PHU_Longitude) + ',' +  
                             String(records[i].Reporting_PHU_City);
-
                   if (nums_city[key]) {
                     nums_city[key] += 1;
                   } else {
@@ -68,7 +67,8 @@
                 }
                 for (var key in nums_city) {
                     key_arr = key.split(',');
-                    loc = {lat: parseInt(key_arr[0]), lng: parseInt(key_arr[1]), city: key_arr[2] + " - " + nums_city[key] + " cases"};
+                    console
+                    loc = {lat: parseFloat(key_arr[0]), lng: parseFloat(key_arr[1]), city: key_arr[2] + " - " + nums_city[key] + " cases"};
                     myFunc(loc, map);
                 }
 
